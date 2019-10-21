@@ -1,0 +1,42 @@
+import { queryNews,deleteNews,addNews } from '@/services/newsCenter';
+const NewsModel = {
+  namespace: 'newsCenter',
+  state: {
+    newsData:[],
+    total:0,
+  },
+  effects: {
+    *fetchNews(_, { call, put }) {
+      const response = yield call(queryNews,_.payload);
+      yield put({
+        type: 'changeNewsData',
+        payload: response,
+      });
+    },
+     *fetchDeleteNews(_, { call, put }) {
+        // console.log(_.payload)
+      const response = yield call(deleteNews,_.payload.forms);
+      yield put({
+        type: 'fetchNews',
+        payload: _.payload.page,
+      });
+    },
+    *fetchAddNews(_, { call, put }) {
+      const response = yield call(addNews,_.payload.forms);
+      yield put({
+        type: 'fetchNews',
+        payload:  _.payload.page,
+      });
+    },
+  },
+  reducers: {
+    changeNewsData(state, action) {
+      return { 
+      	...state,
+      	total:action.payload.data.total,
+      	newsData:action.payload.data.list
+      };
+    },
+  },
+};
+export default NewsModel;
